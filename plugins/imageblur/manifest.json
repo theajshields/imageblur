@@ -1,0 +1,14 @@
+{
+    "name": "Image Blur",
+    "description": "screw you aidan :D",
+    "authors": [
+        {
+            "name": "huskey404",
+            "id": "950554951342522429"
+        }
+    ],
+    "main": "src/index.ts",
+    "vendetta": {
+        "icon": "ic_image"
+    }
+}
