@@ -6,14 +6,15 @@ import { Forms } from "@vendetta/ui/components";
 const { ScrollView, View, Text, TextInput } = ReactNative;
 const { FormSection, FormSwitchRow, FormDivider } = Forms;
 
-// Initialize default storage values
+// Initialize default values
 storage.spoilerOwn ??= false;
 storage.isWhitelist ??= false;
 storage.userIds ??= "";
 storage.channelIds ??= "";
 storage.guildIds ??= "";
 
-const IDInputField = ({ title, description, storageKey }: { title: string; description: string; storageKey: string }) => {
+// A reusable, native-looking input component for Discord IDs
+const IDInputField = ({ title, description, storageKey }) => {
     return (
         <View style={{ paddingHorizontal: 15, paddingVertical: 12 }}>
             <Text style={{ color: "#F2F3F5", fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
@@ -33,7 +34,7 @@ const IDInputField = ({ title, description, storageKey }: { title: string; descr
                 placeholder="123456789, 987654321..."
                 placeholderTextColor="#5C5E66"
                 value={storage[storageKey]}
-                onChangeText={(value: string) => (storage[storageKey] = value)}
+                onChangeText={(value) => (storage[storageKey] = value)}
             />
         </View>
     );
@@ -43,7 +44,8 @@ export default () => {
     useProxy(storage); 
 
     return (
-        <ScrollView style={{ flex: 1 }}>
+        // Added paddingHorizontal here to prevent switches from sliding off-screen
+        <ScrollView style={{ flex: 1, paddingHorizontal: 15, paddingTop: 10 }}>
             <FormSection title="General Settings">
                 <FormSwitchRow
                     label="Spoiler Own Messages"
@@ -53,13 +55,15 @@ export default () => {
                 />
             </FormSection>
 
+            <View style={{ height: 20 }} /> {/* Spacing between sections */}
+
             <FormSection title="ID Filtering">
                 <FormSwitchRow
                     label="Enable Whitelist Mode"
                     subLabel={
                         storage.isWhitelist 
-                            ? "Whitelist: ONLY spoiler attachments from the IDs listed below." 
-                            : "Blacklist: IGNORE attachments from the IDs listed below."
+                        ? "Whitelist: ONLY spoiler attachments from the IDs listed below." 
+                        : "Blacklist: IGNORE attachments from the IDs listed below."
                     }
                     value={storage.isWhitelist}
                     onValueChange={(v: boolean) => (storage.isWhitelist = v)}
