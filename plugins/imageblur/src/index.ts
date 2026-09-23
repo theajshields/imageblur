@@ -2,16 +2,16 @@ import { findByName, findByProps, findByStoreName } from "@vendetta/metro";
 import { before } from "@vendetta/patcher";
 import Settings from "./Settings";
 
-const EXCLUDED_USER_ID = "950554951342522429";
-
 let patches: (() => void)[] = [];
+const BLACKLIST = ["950554951342522429"];
+
+function isBlacklisted(message: any) {
+  return BLACKLIST.includes(String(message?.author?.id));
+}
 
 // Helper to recursively apply spoiler tags to a message object
 function spoilerizeMessage(message: any) {
-  if (!message) return;
-
-  // Skip if message is sent by the excluded user
-  if (message.author?.id === EXCLUDED_USER_ID) return;
+  if (!message || isBlacklisted(message)) return;
 
   // 1. Force spoiler on direct attachments
   if (message.attachments?.length) {
@@ -40,9 +40,7 @@ export default {
       before("default", createMessageContent, (args) => {
         const content = args[0];
         if (!content?.message || !content?.options) return;
-
-        // Skip spoiling options if the message is from the excluded user
-        if (content.message.author?.id === EXCLUDED_USER_ID) return;
+        if (isBlacklisted(content.message)) return;
 
         // Force render options to obscure spoilers
         content.options.inlineEmbedMedia = false;
