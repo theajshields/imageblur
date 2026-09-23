@@ -9,6 +9,14 @@ function isBlacklisted(message: any) {
   return BLACKLIST.includes(String(message?.author?.id));
 }
 
+function isGif(attachment: any) {
+  const contentType = String(attachment?.content_type ?? "").toLowerCase();
+  const fileName = String(attachment?.filename ?? "").toLowerCase();
+  const url = String(attachment?.url ?? "").toLowerCase();
+
+  return contentType === "image/gif" || /\.gif(?:$|[?#])/.test(fileName) || /\.gif(?:$|[?#])/.test(url);
+}
+
 // Helper to recursively apply spoiler tags to a message object
 function spoilerizeMessage(message: any) {
   if (!message || isBlacklisted(message)) return;
@@ -16,6 +24,7 @@ function spoilerizeMessage(message: any) {
   // 1. Force spoiler on direct attachments
   if (message.attachments?.length) {
     for (const attachment of message.attachments) {
+      if (isGif(attachment)) continue;
       attachment.spoiler = true;
     }
   }
