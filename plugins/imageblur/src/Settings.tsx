@@ -3,8 +3,8 @@ import { useProxy } from "@vendetta/storage";
 import { storage } from "@vendetta/plugin";
 import { Forms } from "@vendetta/ui/components";
 
-const { ScrollView, View, Text, TextInput, Switch } = ReactNative;
-const { FormSection, FormDivider } = Forms;
+const { ScrollView, View, Text, TextInput } = ReactNative;
+const { FormSection, FormSwitchRow, FormDivider } = Forms;
 
 // Initialize default storage values
 storage.spoilerOwn ??= false;
@@ -12,30 +12,6 @@ storage.isWhitelist ??= false;
 storage.userIds ??= "";
 storage.channelIds ??= "";
 storage.guildIds ??= "";
-
-// Custom switch row layout with switch positioned directly below the label & description
-const StackedSwitchRow = ({ label, subLabel, value, onValueChange }) => {
-    return (
-        <View style={{ paddingHorizontal: 15, paddingVertical: 12 }}>
-            <Text style={{ color: "#F2F3F5", fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
-                {label}
-            </Text>
-            {subLabel ? (
-                <Text style={{ color: "#B5BAC1", fontSize: 13, marginBottom: 10 }}>
-                    {subLabel}
-                </Text>
-            ) : null}
-            <View style={{ alignItems: "flex-start", marginTop: 4 }}>
-                <Switch
-                    value={value}
-                    onValueChange={onValueChange}
-                    trackColor={{ false: "#4E5058", true: "#5865F2" }}
-                    thumbColor="#FFFFFF"
-                />
-            </View>
-        </View>
-    );
-};
 
 const IDInputField = ({ title, description, storageKey }: { title: string; description: string; storageKey: string }) => {
     return (
@@ -69,7 +45,7 @@ export default () => {
     return (
         <ScrollView style={{ flex: 1 }}>
             <FormSection title="General Settings">
-                <StackedSwitchRow
+                <FormSwitchRow
                     label="Spoiler Own Messages"
                     subLabel="Apply spoilers to attachments sent by you."
                     value={storage.spoilerOwn}
@@ -78,7 +54,7 @@ export default () => {
             </FormSection>
 
             <FormSection title="ID Filtering">
-                <StackedSwitchRow
+                <FormSwitchRow
                     label="Enable Whitelist Mode"
                     subLabel={
                         storage.isWhitelist 
