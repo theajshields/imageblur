@@ -1,87 +1,53 @@
 import { React, ReactNative } from "@vendetta/metro/common";
-import { useProxy } from "@vendetta/storage";
-import { storage } from "@vendetta/plugin";
-import { Forms } from "@vendetta/ui/components";
+const { View, Text, Image, TouchableOpacity, Linking } = ReactNative;
 
-const { ScrollView, View, Text, TextInput } = ReactNative;
-const { FormSection, FormSwitchRow, FormDivider } = Forms;
-
-// Initialize default values
-storage.spoilerOwn ??= false;
-storage.isWhitelist ??= false;
-storage.userIds ??= "";
-storage.channelIds ??= "";
-storage.guildIds ??= "";
-
-// A reusable, native-looking input component for Discord IDs
-const IDInputField = ({ title, description, storageKey }) => {
-    return (
-        <View style={{ paddingHorizontal: 15, paddingVertical: 12 }}>
-            <Text style={{ color: "#F2F3F5", fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
-                {title}
-            </Text>
-            <Text style={{ color: "#B5BAC1", fontSize: 13, marginBottom: 10 }}>
-                {description}
-            </Text>
-            <TextInput
-                style={{
-                    backgroundColor: "#1E1F22", // Discord dark mode input background
-                    color: "#DBDEE1",
-                    padding: 12,
-                    borderRadius: 8,
-                    fontSize: 14,
-                }}
-                placeholder="123456789, 987654321..."
-                placeholderTextColor="#5C5E66"
-                value={storage[storageKey]}
-                onChangeText={(value) => (storage[storageKey] = value)}
-            />
-        </View>
-    );
-};
+const LINK = "https://youtu.be/_yqSbnbUsj4"
 
 export default () => {
-    useProxy(storage); 
+    const openMeowMeow = () => {
+        Linking.canOpenURL(LINK).then(canOpen => {
+            if (canOpen) Linking.openURL(LINK)
+        })
+    }
 
     return (
-        <ScrollView style={{ flex: 1 }}>
-            <FormSection title="General Settings">
-                <FormSwitchRow
-                    label="Spoiler Own Messages"
-                    subLabel="Apply spoilers to attachments sent by you."
-                    value={storage.spoilerOwn}
-                    onValueChange={(v: boolean) => (storage.spoilerOwn = v)}
+        <View
+            style={{
+                width: "100%",
+                height: "100%",
+                backgroundColor: "white",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+            }}
+        >
+            <View
+                style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Text
+                    style={{
+                        fontSize: 30
+                    }}
+                >Hewwo! ^w^</Text>
+                <Text style={{
+                    textAlign: "center"
+                }}>If you see this, it means the plugin is working! You can keep going with dev!</Text>
+            </View>
+            <TouchableOpacity
+                onPress={openMeowMeow}
+            >
+                <Image 
+                    style={{ width: 300, height: 300 }}
+                    source={{
+                        uri: "https://i.redd.it/77tagi3s1d7c1.gif"
+                    }} 
                 />
-            </FormSection>
-
-            <FormSection title="ID Filtering">
-                <FormSwitchRow
-                    label="Enable Whitelist Mode"
-                    subLabel={
-                        storage.isWhitelist 
-                        ? "Whitelist: ONLY spoiler attachments from the IDs listed below." 
-                        : "Blacklist: IGNORE attachments from the IDs listed below."
-                    }
-                    value={storage.isWhitelist}
-                    onValueChange={(v: boolean) => (storage.isWhitelist = v)}
-                />
-                <FormDivider />
-                <IDInputField 
-                    title="User IDs" 
-                    description="Comma-separated list of user IDs to filter."
-                    storageKey="userIds" 
-                />
-                <IDInputField 
-                    title="Channel IDs" 
-                    description="Comma-separated list of channel IDs to filter."
-                    storageKey="channelIds" 
-                />
-                <IDInputField 
-                    title="Server IDs" 
-                    description="Comma-separated list of server (guild) IDs to filter."
-                    storageKey="guildIds" 
-                />
-            </FormSection>
-        </ScrollView>
-    );
-};
+            </TouchableOpacity>
+        </View>
+    )
+}
