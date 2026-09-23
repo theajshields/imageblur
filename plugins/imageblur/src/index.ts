@@ -53,25 +53,32 @@ export default {
         const guildId = channel?.guild_id;
         const myUserId = UserStore?.getCurrentUser()?.id;
 
-        // Settings Check 1: Exclude self-sent messages if the setting is disabled
-        if (!storage.spoilerOwn && authorId === myUserId) return;
+        // Settings Check 1: Exclude self-sent messages if spoilerOwn is disabled
+        if (!storage.spoilerOwn && authorId && myUserId && authorId === myUserId) {
+          return args;
+        }
 
         // Settings Check 2: Parse filtering lists
         const users = getParsedIds(storage.userIds);
         const channels = getParsedIds(storage.channelIds);
         const guilds = getParsedIds(storage.guildIds);
 
-        // Settings Check 3: Check if current context matches any of our lists
-        const isMatched =
-          (authorId && users.includes(authorId)) ||
-          (channelId && channels.includes(channelId)) ||
-          (guildId && guilds.includes(guildId));
+        const isUserMatch = authorId ? users.includes(authorId) : false;
+        const isChannelMatch = channelId ? channels.includes(channelId) : false;
+        const isGuildMatch = guildId ? guilds.includes(guildId) : false;
 
-        // Enforce Whitelist/Blacklist rules
-        if (storage.isWhitelist && !isMatched) return; // Whitelist mode: skip if NOT matched
-        if (!storage.isWhitelist && isMatched) return; // Blacklist mode: skip if matched
+        const isMatched = isUserMatch || isChannelMatch || isGuildMatch;
 
-        // Apply visual render flags
+        // FILTERING LOGIC FIX:
+        if (storage.isWhitelist) {
+          // Whitelist Mode: ONLY blur if an ID matches one of the user's whitelist inputs
+          if (!isMatched) return args;
+        } else {
+          // Blacklist Mode: Blur EVERYTHING EXCEPT when an ID matches the blacklist
+          if (isMatched) return args;
+        }
+
+        // Apply visual render flags to enforce obscuring
         content.options.inlineEmbedMedia = false;
         content.options.shouldObscureSpoiler = true;
 

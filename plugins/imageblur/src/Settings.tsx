@@ -3,7 +3,7 @@ import { useProxy } from "@vendetta/storage";
 import { storage } from "@vendetta/plugin";
 import { Forms } from "@vendetta/ui/components";
 
-const { ScrollView, View, Text, TextInput, Switch } = ReactNative;
+const { ScrollView, View, Text, TextInput, Switch, TouchableOpacity } = ReactNative;
 const { FormSection, FormDivider } = Forms;
 
 // Initialize default storage values
@@ -13,8 +13,8 @@ storage.userIds ??= "";
 storage.channelIds ??= "";
 storage.guildIds ??= "";
 
-// Custom switch row layout with switch positioned directly below the label & description
-const StackedSwitchRow = ({ label, subLabel, value, onValueChange }) => {
+// Interactive switch row with a dedicated touch zone and clean spacing
+const StackedSwitchRow = ({ label, subLabel, value, onValueChange }: { label: string; subLabel?: string; value: boolean; onValueChange: (v: boolean) => void }) => {
     return (
         <View style={{ paddingHorizontal: 15, paddingVertical: 12 }}>
             <Text style={{ color: "#F2F3F5", fontSize: 16, fontWeight: "500", marginBottom: 4 }}>
@@ -25,14 +25,18 @@ const StackedSwitchRow = ({ label, subLabel, value, onValueChange }) => {
                     {subLabel}
                 </Text>
             ) : null}
-            <View style={{ alignItems: "flex-start", marginTop: 4 }}>
+            <TouchableOpacity 
+                activeOpacity={0.8}
+                onPress={() => onValueChange(!value)}
+                style={{ flexDirection: "row", alignItems: "center", alignSelf: "flex-start", paddingVertical: 4 }}
+            >
                 <Switch
                     value={value}
                     onValueChange={onValueChange}
                     trackColor={{ false: "#4E5058", true: "#5865F2" }}
                     thumbColor="#FFFFFF"
                 />
-            </View>
+            </TouchableOpacity>
         </View>
     );
 };
