@@ -25,7 +25,7 @@ const IDInputField = ({ title, description, storageKey }) => {
             </Text>
             <TextInput
                 style={{
-                    backgroundColor: "#1E1F22",
+                    backgroundColor: "#1E1F22", // Discord dark mode input background
                     color: "#DBDEE1",
                     padding: 12,
                     borderRadius: 8,
@@ -44,8 +44,7 @@ export default () => {
     useProxy(storage); 
 
     return (
-        // Added paddingHorizontal here to prevent switches from sliding off-screen
-        <ScrollView style={{ flex: 1, paddingHorizontal: 15, paddingTop: 10 }}>
+        <ScrollView style={{ flex: 1 }}>
             <FormSection title="General Settings">
                 <FormSwitchRow
                     label="Spoiler Own Messages"
@@ -54,8 +53,6 @@ export default () => {
                     onValueChange={(v: boolean) => (storage.spoilerOwn = v)}
                 />
             </FormSection>
-
-            <View style={{ height: 20 }} /> {/* Spacing between sections */}
 
             <FormSection title="ID Filtering">
                 <FormSwitchRow
